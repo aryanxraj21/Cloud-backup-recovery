@@ -1,0 +1,22 @@
+# Local cloud-like stack: API container + S3-compatible object storage (MinIO)
+services:
+  api:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      JWT_SECRET: change-this-to-a-long-random-secret-value
+      BACKUP_BUCKET: backups
+      S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
+      AWS_DEFAULT_REGION: us-east-1
+    volumes: ["dbdata:/data"]
+    depends_on: [minio]
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["objdata:/data"]
+volumes:
+  dbdata:
+  objdata:
