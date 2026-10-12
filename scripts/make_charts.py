@@ -15,7 +15,7 @@ x = [r["damaged"] for r in a]
 ax.bar([str(v) for v in x], [r["recovery_time_ms_server"] for r in a], color="#355c9a", label="Restore (server RTO)")
 ax.plot([str(v) for v in x], [r["detect_ms"] for r in a], "o-", color="#c47f00", label="Detection (verify API)")
 ax.set_xlabel("Damaged records (half deleted, half corrupted) out of 1000")
-ax.set_ylabel("Time (ms)"); ax.set_title("Detection and recovery time vs damage size"); ax.legend(frameon=False)
+ax.set_ylabel("Time (ms)"); ax.set_title("Detection and recovery time vs damage size"); ax.set_ylim(0, max(r["recovery_time_ms_server"] for r in a) * 1.45); ax.legend(frameon=False, loc="upper left", ncol=2)
 fig.tight_layout(); fig.savefig("results/chart_recovery.png", dpi=170)
 
 # 2. load test latency + throughput
