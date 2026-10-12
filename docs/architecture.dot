@@ -1,0 +1,22 @@
+digraph G {
+  rankdir=TB; nodesep=0.4; ranksep=0.55; fontname="Helvetica"; node [fontname="Helvetica", fontsize=11, style="rounded,filled", shape=box, fillcolor="#eef3fb", color="#355c9a"];
+  edge [fontname="Helvetica", fontsize=9, color="#555555"];
+  users [label="Users / Clients\n(admin, operator, viewer)\nSwagger UI, curl, load tester", shape=box, fillcolor="#fff4e0", color="#c47f00"];
+  subgraph cluster_cloud { label="Cloud deployment (Docker container on Render / any container host)"; style="dashed"; color="#888888"; fontsize=12;
+    api [label="FastAPI REST API\n- JWT auth + RBAC\n- request timing middleware\n- /records /backups /restores\n- /chaos /metrics /logs /health"];
+    bsvc [label="Backup & Verify Service\n- snapshot + SHA-256 manifest\n- per-record checksums\n- idempotency keys"];
+    q [label="Restore Job Queue\n(in-process queue)", shape=cylinder, fillcolor="#f2ecfb", color="#6b4fa0"];
+    w [label="Recovery Worker\n- atomic transaction restore\n- repair / full mode\n- failover to older backup\n- post-restore verification"];
+    res [label="Resilience layer\nRetry (exp. backoff + jitter)\nCircuit Breaker\nGraceful degradation", fillcolor="#e8f6ec", color="#2f7d46"];
+    db [label="SQL Database\n(SQLite file / managed SQL)\nrecords, backups,\nrestore_jobs, users, events", shape=cylinder, fillcolor="#e0f0ff"];
+    obs [label="Observability\nJSON logs (logs/app.log)\nevents table, /metrics", fillcolor="#fdeeee", color="#b03a3a"];
+    chaos [label="Fault Injector\ndelete / corrupt records\nstorage outage / flaky\ncorrupt backup", fillcolor="#fdeeee", color="#b03a3a"];
+  }
+  s3 [label="Object Storage\n(S3 / MinIO bucket,\nlocal bucket in demo)\nbackups/<id>.json", shape=cylinder, fillcolor="#fff4e0", color="#c47f00"];
+  users -> api [label="HTTPS + Bearer JWT"];
+  api -> bsvc; api -> q [label="enqueue restore"]; q -> w [label="consume"];
+  api -> db [label="CRUD"]; bsvc -> db; w -> db [label="atomic write"];
+  bsvc -> res; w -> res; res -> s3 [label="put / get backup"];
+  api -> chaos [label="admin only"]; chaos -> db [style=dashed, color="#b03a3a"]; chaos -> s3 [style=dashed, color="#b03a3a"];
+  api -> obs; w -> obs; res -> obs;
+}
