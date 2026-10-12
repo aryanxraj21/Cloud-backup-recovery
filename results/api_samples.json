@@ -1,0 +1,249 @@
+[
+  {
+    "label": "Login (admin)",
+    "req": "POST /auth/login",
+    "status": 200,
+    "body": {
+      "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc5MTc5NzQ0MCwiZXhwIjoxNzkxODAxMDQwfQ.DY86ok8HtAtBmF3Db677CREBlQhGKN9TQ45_yDzM6rA",
+      "token_type": "bearer",
+      "role": "admin"
+    }
+  },
+  {
+    "label": "Unauthenticated request rejected",
+    "req": "GET /records",
+    "status": 401,
+    "body": {
+      "detail": "missing bearer token"
+    }
+  },
+  {
+    "label": "Viewer blocked from chaos (RBAC)",
+    "req": "POST /chaos",
+    "status": 403,
+    "body": {
+      "detail": "requires role 'admin'"
+    }
+  },
+  {
+    "label": "Create backup",
+    "req": "POST /backups",
+    "status": 201,
+    "body": {
+      "id": "bkp_20261012093040_f4e74a",
+      "created_at": "2026-10-12T09:30:40.697775+00:00",
+      "created_by": "admin",
+      "status": "COMPLETED",
+      "record_count": 2485,
+      "size_bytes": 653156,
+      "object_key": "backups/bkp_20261012093040_f4e74a.json",
+      "manifest_checksum": "7639d46c0c289547cb503b40c1e2e8cc358f147b5a3d2e66520cbb3118c211f8",
+      "idempotency_key": "demo-capture-1",
+      "duration_ms": 13.257796999994298,
+      "last_verified_at": null,
+      "last_verify_status": null,
+      "idempotent_replay": false
+    }
+  },
+  {
+    "label": "Inject: corrupt 5 records",
+    "req": "POST /chaos",
+    "status": 200,
+    "body": {
+      "type": "corrupt_records",
+      "corrupted_ids": [
+        918,
+        1003,
+        1621,
+        1953,
+        2107
+      ]
+    }
+  },
+  {
+    "label": "Inject: delete 5 records",
+    "req": "POST /chaos",
+    "status": 200,
+    "body": {
+      "type": "delete_records",
+      "deleted_ids": [
+        334,
+        609,
+        1107,
+        1269,
+        1888
+      ]
+    }
+  },
+  {
+    "label": "Verify backup vs live DB",
+    "req": "POST /backups/bkp_20261012093040_f4e74a/verify",
+    "status": 200,
+    "body": {
+      "backup_id": "bkp_20261012093040_f4e74a",
+      "backup_integrity": "OK",
+      "status": "DAMAGE_DETECTED",
+      "records_in_backup": 2485,
+      "live_records": 2480,
+      "missing": [
+        334,
+        609,
+        1107,
+        1269,
+        1888
+      ],
+      "corrupted": [
+        918,
+        1003,
+        1621,
+        1953,
+        2107
+      ],
+      "changed_since_backup": 0,
+      "new_since_backup": 0,
+      "verify_ms": 22.87
+    }
+  },
+  {
+    "label": "Start repair restore (queued)",
+    "req": "POST /restores",
+    "status": 202,
+    "body": {
+      "id": "rst_17b74f0952",
+      "backup_id": "bkp_20261012093040_f4e74a",
+      "used_backup_id": null,
+      "mode": "repair",
+      "fallback": 1,
+      "status": "QUEUED",
+      "requested_by": "admin",
+      "idempotency_key": null,
+      "queued_at": "2026-10-12T09:30:40.751644+00:00",
+      "started_at": null,
+      "finished_at": null,
+      "recovery_time_ms": null,
+      "attempts": 0,
+      "storage_retries": 0,
+      "records_restored": 0,
+      "verified": 0,
+      "error": null,
+      "idempotent_replay": false
+    }
+  },
+  {
+    "label": "Restore job status",
+    "req": "GET /restores/rst_17b74f0952",
+    "status": 200,
+    "body": {
+      "id": "rst_17b74f0952",
+      "backup_id": "bkp_20261012093040_f4e74a",
+      "used_backup_id": "bkp_20261012093040_f4e74a",
+      "mode": "repair",
+      "fallback": 1,
+      "status": "COMPLETED",
+      "requested_by": "admin",
+      "idempotency_key": null,
+      "queued_at": "2026-10-12T09:30:40.751644+00:00",
+      "started_at": "2026-10-12T09:30:40.753122+00:00",
+      "finished_at": "2026-10-12T09:30:40.807425+00:00",
+      "recovery_time_ms": 55.27645400002257,
+      "attempts": 1,
+      "storage_retries": 0,
+      "records_restored": 10,
+      "verified": 1,
+      "error": null
+    }
+  },
+  {
+    "label": "Verify after recovery",
+    "req": "POST /backups/bkp_20261012093040_f4e74a/verify",
+    "status": 200,
+    "body": {
+      "backup_id": "bkp_20261012093040_f4e74a",
+      "backup_integrity": "OK",
+      "status": "HEALTHY",
+      "records_in_backup": 2485,
+      "live_records": 2485,
+      "missing": [],
+      "corrupted": [],
+      "changed_since_backup": 0,
+      "new_since_backup": 0,
+      "verify_ms": 39.86
+    }
+  },
+  {
+    "label": "Health check",
+    "req": "GET /health",
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "database": "ok",
+      "object_storage": "ok",
+      "circuit_breaker": "CLOSED",
+      "queue_depth": 0
+    }
+  },
+  {
+    "label": "Metrics",
+    "req": "GET /metrics",
+    "status": 200,
+    "body": {
+      "counters": {
+        "http_requests_total": 8766,
+        "http_success_total": 8766,
+        "backups_created_total": 3,
+        "idempotent_replays_total": 1,
+        "chaos_delete_records_total": 6,
+        "chaos_corrupt_records_total": 12,
+        "verifications_total": 10,
+        "damage_detected_total": 5,
+        "restore_jobs_total": 12,
+        "restore_success_total": 12,
+        "chaos_storage_flaky_total": 1,
+        "storage_retries_total": 14,
+        "circuit_open_total": 5,
+        "circuit_rejected_total": 8,
+        "restore_job_retries_total": 8,
+        "circuit_half_open_total": 5,
+        "circuit_closed_total": 3,
+        "chaos_clear_total": 1,
+        "chaos_storage_outage_total": 1,
+        "chaos_corrupt_backup_total": 1,
+        "backup_corruption_detected_total": 1,
+        "backup_failovers_total": 1
+      },
+      "timings_ms": {
+        "http_request": {
+          "count": 5000,
+          "avg": 8.49,
+          "p50": 2.99,
+          "p95": 20.44,
+          "max": 264.09
+        },
+        "backup_duration": {
+          "count": 3,
+          "avg": 8.54,
+          "p50": 6.82,
+          "p95": 13.26,
+          "max": 13.26
+        },
+        "verify_duration": {
+          "count": 10,
+          "avg": 17.06,
+          "p50": 16.49,
+          "p95": 39.86,
+          "max": 39.86
+        },
+        "recovery_time": {
+          "count": 12,
+          "avg": 1626.84,
+          "p50": 100.36,
+          "p95": 7740.61,
+          "max": 7740.61
+        }
+      },
+      "circuit_breaker": "CLOSED",
+      "queue_depth": 0,
+      "completed_restores": 12
+    }
+  }
+]

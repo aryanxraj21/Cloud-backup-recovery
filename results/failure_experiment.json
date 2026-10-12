@@ -1,0 +1,503 @@
+{
+  "idempotency": {
+    "first_id": "bkp_20261012092836_d9b89b",
+    "second_id": "bkp_20261012092836_d9b89b",
+    "same_backup": true,
+    "second_was_replay": true
+  },
+  "scenario_A": [
+    {
+      "damaged": 10,
+      "missing_detected": 5,
+      "corrupted_detected": 5,
+      "detect_ms": 15.8,
+      "recovery_time_ms_server": 25.7,
+      "recovery_time_ms_client": 232.9,
+      "records_restored": 10,
+      "verified": true,
+      "post_verify_status": "HEALTHY",
+      "dataset_identical_to_baseline": true
+    },
+    {
+      "damaged": 50,
+      "missing_detected": 25,
+      "corrupted_detected": 25,
+      "detect_ms": 14.8,
+      "recovery_time_ms_server": 28.3,
+      "recovery_time_ms_client": 234.9,
+      "records_restored": 50,
+      "verified": true,
+      "post_verify_status": "HEALTHY",
+      "dataset_identical_to_baseline": true
+    },
+    {
+      "damaged": 100,
+      "missing_detected": 50,
+      "corrupted_detected": 50,
+      "detect_ms": 23.1,
+      "recovery_time_ms_server": 31.2,
+      "recovery_time_ms_client": 239.5,
+      "records_restored": 100,
+      "verified": true,
+      "post_verify_status": "HEALTHY",
+      "dataset_identical_to_baseline": true
+    },
+    {
+      "damaged": 200,
+      "missing_detected": 100,
+      "corrupted_detected": 100,
+      "detect_ms": 14.8,
+      "recovery_time_ms_server": 28.8,
+      "recovery_time_ms_client": 235.0,
+      "records_restored": 200,
+      "verified": true,
+      "post_verify_status": "HEALTHY",
+      "dataset_identical_to_baseline": true
+    }
+  ],
+  "scenario_B": {
+    "failure_rate": 0.5,
+    "runs": [
+      {
+        "status": "COMPLETED",
+        "attempts": 1,
+        "storage_retries": 1,
+        "recovery_time_ms": 109.3
+      },
+      {
+        "status": "COMPLETED",
+        "attempts": 1,
+        "storage_retries": 1,
+        "recovery_time_ms": 134.3
+      },
+      {
+        "status": "COMPLETED",
+        "attempts": 3,
+        "storage_retries": 0,
+        "recovery_time_ms": 3646.6
+      },
+      {
+        "status": "COMPLETED",
+        "attempts": 4,
+        "storage_retries": 0,
+        "recovery_time_ms": 7740.6
+      },
+      {
+        "status": "COMPLETED",
+        "attempts": 1,
+        "storage_retries": 1,
+        "recovery_time_ms": 100.4
+      }
+    ],
+    "dataset_identical_to_baseline": true
+  },
+  "scenario_C": {
+    "outage_s": 6,
+    "job_status_history": [
+      "RETRY_SCHEDULED",
+      "COMPLETED"
+    ],
+    "attempts": 4,
+    "recovery_time_ms": 7596.3,
+    "client_e2e_ms": 7617.5,
+    "reads_served_during_outage": 52,
+    "reads_failed_during_outage": 0,
+    "health_states_seen": [
+      "degraded"
+    ],
+    "breaker_states_seen": [
+      "CLOSED",
+      "OPEN"
+    ],
+    "dataset_identical_to_baseline": true
+  },
+  "scenario_D": {
+    "requested_backup": "bkp_20261012092901_a0a58d",
+    "verify_result": "CORRUPTED",
+    "used_backup": "bkp_20261012092836_d9b89b",
+    "status": "COMPLETED",
+    "recovery_time_ms": 25.4,
+    "dataset_identical_to_baseline": true
+  },
+  "final_metrics": {
+    "counters": {
+      "http_requests_total": 1251,
+      "http_success_total": 1251,
+      "backups_created_total": 2,
+      "idempotent_replays_total": 1,
+      "chaos_delete_records_total": 5,
+      "chaos_corrupt_records_total": 11,
+      "verifications_total": 8,
+      "damage_detected_total": 4,
+      "restore_jobs_total": 11,
+      "restore_success_total": 11,
+      "chaos_storage_flaky_total": 1,
+      "storage_retries_total": 14,
+      "circuit_open_total": 5,
+      "circuit_rejected_total": 8,
+      "restore_job_retries_total": 8,
+      "circuit_half_open_total": 5,
+      "circuit_closed_total": 3,
+      "chaos_clear_total": 1,
+      "chaos_storage_outage_total": 1,
+      "chaos_corrupt_backup_total": 1,
+      "backup_corruption_detected_total": 1,
+      "backup_failovers_total": 1
+    },
+    "timings_ms": {
+      "http_request": {
+        "count": 1251,
+        "avg": 2.51,
+        "p50": 2.02,
+        "p95": 4.44,
+        "max": 63.11
+      },
+      "backup_duration": {
+        "count": 2,
+        "avg": 6.18,
+        "p50": 6.82,
+        "p95": 6.82,
+        "max": 6.82
+      },
+      "verify_duration": {
+        "count": 8,
+        "avg": 13.48,
+        "p50": 14.03,
+        "p95": 18.01,
+        "max": 18.01
+      },
+      "recovery_time": {
+        "count": 11,
+        "avg": 1769.71,
+        "p50": 100.36,
+        "p95": 7740.61,
+        "max": 7740.61
+      }
+    },
+    "circuit_breaker": "CLOSED",
+    "queue_depth": 0,
+    "completed_restores": 11
+  },
+  "failure_logs": [
+    {
+      "id": 92,
+      "ts": "2026-10-12T09:29:01.143858+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "backup_failover",
+      "details": "{\"job_id\": \"rst_4905ce0bdd\", \"requested\": \"bkp_20261012092901_a0a58d\", \"used\": \"bkp_20261012092836_d9b89b\", \"reason\": \"backup bkp_20261012092901_a0a58d failed integrity check (checksum mismatch)\"}"
+    },
+    {
+      "id": 91,
+      "ts": "2026-10-12T09:29:01.138970+00:00",
+      "level": "ERROR",
+      "actor": "system",
+      "event": "backup_rejected",
+      "details": "{\"job_id\": \"rst_4905ce0bdd\", \"backup_id\": \"bkp_20261012092901_a0a58d\", \"error\": \"backup bkp_20261012092901_a0a58d failed integrity check (checksum mismatch)\"}"
+    },
+    {
+      "id": 89,
+      "ts": "2026-10-12T09:29:01.132498+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"delete_records\", \"deleted_ids\": [43, 51, 214, 296, 455, 478, 530, 557, 593, 640, 666, 696, 703, 742, 748, 795, 809, 891, 963, 969]}"
+    },
+    {
+      "id": 88,
+      "ts": "2026-10-12T09:29:01.124947+00:00",
+      "level": "ERROR",
+      "actor": "admin",
+      "event": "backup_corruption_detected",
+      "details": "{\"backup_id\": \"bkp_20261012092901_a0a58d\"}"
+    },
+    {
+      "id": 87,
+      "ts": "2026-10-12T09:29:01.120073+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"corrupt_backup\", \"backup_id\": \"bkp_20261012092901_a0a58d\"}"
+    },
+    {
+      "id": 82,
+      "ts": "2026-10-12T09:28:53.497504+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_ff528089c1\", \"attempt\": 3, \"retry_in_s\": 4.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 81,
+      "ts": "2026-10-12T09:28:53.409929+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.085, \"error\": \"object storage unreachable (injected outage)\"}"
+    },
+    {
+      "id": 80,
+      "ts": "2026-10-12T09:28:53.409606+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "circuit_state_change",
+      "details": "{\"breaker\": \"object-storage\", \"old\": \"HALF_OPEN\", \"new\": \"OPEN\"}"
+    },
+    {
+      "id": 78,
+      "ts": "2026-10-12T09:28:51.406065+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_ff528089c1\", \"attempt\": 2, \"retry_in_s\": 2.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 77,
+      "ts": "2026-10-12T09:28:50.404117+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_ff528089c1\", \"attempt\": 1, \"retry_in_s\": 1.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 76,
+      "ts": "2026-10-12T09:28:50.151491+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 3, \"wait_s\": 0.251, \"error\": \"object storage unreachable (injected outage)\"}"
+    },
+    {
+      "id": 75,
+      "ts": "2026-10-12T09:28:50.150548+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "circuit_state_change",
+      "details": "{\"breaker\": \"object-storage\", \"old\": \"CLOSED\", \"new\": \"OPEN\"}"
+    },
+    {
+      "id": 74,
+      "ts": "2026-10-12T09:28:50.030904+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 2, \"wait_s\": 0.118, \"error\": \"object storage unreachable (injected outage)\"}"
+    },
+    {
+      "id": 73,
+      "ts": "2026-10-12T09:28:49.962173+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.068, \"error\": \"object storage unreachable (injected outage)\"}"
+    },
+    {
+      "id": 71,
+      "ts": "2026-10-12T09:28:49.956809+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"storage_outage\", \"outage_seconds\": 6.0}"
+    },
+    {
+      "id": 70,
+      "ts": "2026-10-12T09:28:49.952889+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"corrupt_records\", \"corrupted_ids\": [72, 120, 165, 186, 188, 190, 195, 204, 218, 238, 261, 274, 277, 278, 379, 413, 535, 594, 668, 693, 806, 850, 915, 955, 983]}"
+    },
+    {
+      "id": 69,
+      "ts": "2026-10-12T09:28:49.908621+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"clear\"}"
+    },
+    {
+      "id": 67,
+      "ts": "2026-10-12T09:28:49.697501+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.069, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 65,
+      "ts": "2026-10-12T09:28:49.690122+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"corrupt_records\", \"corrupted_ids\": [89, 265, 346, 464, 526, 554, 641, 805, 813, 962]}"
+    },
+    {
+      "id": 61,
+      "ts": "2026-10-12T09:28:45.635647+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_c1dbcc352f\", \"attempt\": 3, \"retry_in_s\": 4.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 60,
+      "ts": "2026-10-12T09:28:45.576362+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.058, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 59,
+      "ts": "2026-10-12T09:28:45.575874+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "circuit_state_change",
+      "details": "{\"breaker\": \"object-storage\", \"old\": \"HALF_OPEN\", \"new\": \"OPEN\"}"
+    },
+    {
+      "id": 57,
+      "ts": "2026-10-12T09:28:43.573075+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_c1dbcc352f\", \"attempt\": 2, \"retry_in_s\": 2.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 56,
+      "ts": "2026-10-12T09:28:42.569000+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_c1dbcc352f\", \"attempt\": 1, \"retry_in_s\": 1.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 55,
+      "ts": "2026-10-12T09:28:42.170152+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 3, \"wait_s\": 0.397, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 54,
+      "ts": "2026-10-12T09:28:42.169091+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "circuit_state_change",
+      "details": "{\"breaker\": \"object-storage\", \"old\": \"CLOSED\", \"new\": \"OPEN\"}"
+    },
+    {
+      "id": 53,
+      "ts": "2026-10-12T09:28:42.008685+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 2, \"wait_s\": 0.159, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 52,
+      "ts": "2026-10-12T09:28:41.920663+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.087, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 50,
+      "ts": "2026-10-12T09:28:41.914944+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"corrupt_records\", \"corrupted_ids\": [36, 166, 613, 633, 816, 824, 927, 965, 982, 987]}"
+    },
+    {
+      "id": 46,
+      "ts": "2026-10-12T09:28:39.853202+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_6b5755367a\", \"attempt\": 2, \"retry_in_s\": 2.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 45,
+      "ts": "2026-10-12T09:28:38.851112+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "restore_deferred",
+      "details": "{\"job_id\": \"rst_6b5755367a\", \"attempt\": 1, \"retry_in_s\": 1.0, \"error\": \"circuit 'object-storage' is OPEN\"}"
+    },
+    {
+      "id": 44,
+      "ts": "2026-10-12T09:28:38.450786+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 3, \"wait_s\": 0.399, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 43,
+      "ts": "2026-10-12T09:28:38.450016+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "circuit_state_change",
+      "details": "{\"breaker\": \"object-storage\", \"old\": \"CLOSED\", \"new\": \"OPEN\"}"
+    },
+    {
+      "id": 42,
+      "ts": "2026-10-12T09:28:38.311727+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 2, \"wait_s\": 0.137, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 41,
+      "ts": "2026-10-12T09:28:38.234150+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.075, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 39,
+      "ts": "2026-10-12T09:28:38.228068+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"corrupt_records\", \"corrupted_ids\": [53, 133, 144, 393, 472, 505, 647, 769, 824, 903]}"
+    },
+    {
+      "id": 37,
+      "ts": "2026-10-12T09:28:38.013896+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.095, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 35,
+      "ts": "2026-10-12T09:28:38.007737+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"corrupt_records\", \"corrupted_ids\": [6, 317, 391, 443, 469, 687, 767, 859, 924, 976]}"
+    },
+    {
+      "id": 33,
+      "ts": "2026-10-12T09:28:37.793396+00:00",
+      "level": "WARNING",
+      "actor": "system",
+      "event": "retry",
+      "details": "{\"op\": \"get:backups/bkp_20261012092836_d9b89b.json\", \"attempt\": 1, \"wait_s\": 0.076, \"error\": \"transient storage error 503 (injected)\"}"
+    },
+    {
+      "id": 31,
+      "ts": "2026-10-12T09:28:37.785641+00:00",
+      "level": "WARNING",
+      "actor": "admin",
+      "event": "failure_injected",
+      "details": "{\"type\": \"corrupt_records\", \"corrupted_ids\": [35, 225, 247, 305, 469, 472, 566, 770, 924, 928]}"
+    }
+  ]
+}

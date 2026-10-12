@@ -1,0 +1,59 @@
+[
+  {
+    "level": "low",
+    "concurrent_users": 5,
+    "requests": 500,
+    "duration_s": 1.02,
+    "throughput_rps": 488.1,
+    "avg_ms": 10.1,
+    "p50_ms": 9.1,
+    "p95_ms": 18.4,
+    "p99_ms": 25.5,
+    "max_ms": 37.2,
+    "success": 500,
+    "errors": 0,
+    "error_rate_pct": 0.0,
+    "status_codes": {
+      "200": 390,
+      "201": 110
+    }
+  },
+  {
+    "level": "medium",
+    "concurrent_users": 25,
+    "requests": 2000,
+    "duration_s": 5.26,
+    "throughput_rps": 380.5,
+    "avg_ms": 63.6,
+    "p50_ms": 49.7,
+    "p95_ms": 161.6,
+    "p99_ms": 223.3,
+    "max_ms": 361.6,
+    "success": 2000,
+    "errors": 0,
+    "error_rate_pct": 0.0,
+    "status_codes": {
+      "200": 1565,
+      "201": 435
+    }
+  },
+  {
+    "level": "high",
+    "concurrent_users": 100,
+    "requests": 5000,
+    "duration_s": 19.4,
+    "throughput_rps": 257.7,
+    "avg_ms": 379.0,
+    "p50_ms": 226.0,
+    "p95_ms": 1235.4,
+    "p99_ms": 2543.7,
+    "max_ms": 5249.6,
+    "success": 5000,
+    "errors": 0,
+    "error_rate_pct": 0.0,
+    "status_codes": {
+      "200": 4060,
+      "201": 940
+    }
+  }
+]
